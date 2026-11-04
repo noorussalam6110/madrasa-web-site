@@ -11155,9 +11155,12 @@ async function renderCharts(){
       options:{
         responsive:true,
         maintainAspectRatio:false,
-        // 🆕 ELASTIC BOUNCE ANIMATION
-        animation: {
-          y: { duration: 3000, easing: 'easeOutElastic', from: 0 },
+        // 🆕 MOBILE OPTIMIZED ANIMATION
+        animation: (window.innerWidth <= 900) ? {
+          y: { duration: 1200, easing: 'easeOutBack', from: 0 }, // മൊബൈലിൽ വേഗത്തിൽ തീരും
+          x: { duration: 800, easing: 'easeOutQuart' }
+        } : {
+          y: { duration: 3000, easing: 'easeOutElastic', from: 0 }, // ഡെസ്ക്ടോപ്പിൽ ബൗൺസ് ഇഫക്ട്
           x: { duration: 1000, easing: 'easeOutQuart' }
         },
         plugins:{legend:{display:false}},
@@ -11197,8 +11200,11 @@ async function renderCharts(){
       options:{
         responsive:true,
         maintainAspectRatio:false,
-        // 🆕 ELASTIC BOUNCE ANIMATION
-        animation: {
+        // 🆕 MOBILE OPTIMIZED ANIMATION
+        animation: (window.innerWidth <= 900) ? {
+          y: { duration: 1200, easing: 'easeOutBack', from: 0 },
+          x: { duration: 800, easing: 'easeOutQuart' }
+        } : {
           y: { duration: 3000, easing: 'easeOutElastic', from: 0 },
           x: { duration: 1000, easing: 'easeOutQuart' }
         },
