@@ -22304,19 +22304,19 @@ CREATE INDEX IF NOT EXISTS idx_creation_likes_lookup ON creation_likes(creation_
   /* 🎯 PRIORITY ORDER — Header-ന് താഴെ ഈ ക്രമത്തിൽ          */
   /* ═══════════════════════════════════════════════════════ */
   var DESIRED_ORDER = [
-    '#studentExtFormWidget',        // 🆕 0. External Form Link (ഏറ്റവും മുകളിൽ)
-    '.student-welcome-banner',      // 1. Good morning greeting
-    '#leaderboardSection',          // 2. Top Winners
-    '#palathulliSection',           // 3. Palathulli സമ്പാദ്യം
-    '#dailyHub',                    // 4. Prayer + Islamic + Exam
-    '#xpWidget',                    // 5. XP Level
-    '#streakWidget',                // 6. Streak Fire
-    '#missionsWidget',              // 7. Daily Missions
-    '#statsGridSection',            // 8. Stats cards
-    '#madrasaRankCard',             // 9. Overall Madrasa Rank
-    '#chartsSection',               // 10. Charts
-    '#quickActionsTitle',           // 11. Quick Actions title
-    '#quickActionsGrid',            // 12. Quick Actions tiles
+    '#studentExtFormWidget',        // 0. External Form Link (Admin Priority)
+    '.student-welcome-banner',      // 1. Greeting
+    '#quickActionsTitle',           // 2. Quick Actions Title
+    '#quickActionsGrid',            // 3. Quick Actions Tiles (ഏറ്റവും ഉപയോഗപ്രദം)
+    '#palathulliSection',           // 4. Palathulli സമ്പാദ്യം (ബാലൻസ്)
+    '#dailyHub',                    // 5. Prayer + Islamic + Exam
+    '#statsGridSection',            // 6. Stats cards (Grade, Rank, Attendance)
+    '#madrasaRankCard',             // 7. Overall Madrasa Rank
+    '#chartsSection',               // 8. Charts (ഗ്രാഫുകൾ ഇവിടെ മുകളിലേക്ക് മാറ്റി)
+    '#leaderboardSection',          // 9. Top Winners
+    '#xpWidget',                    // 10. XP Level
+    '#streakWidget',                // 11. Streak Fire
+    '#missionsWidget',              // 12. Daily Missions
     '#feedEventsRow',               // 13. Feed + Events
     '#monthlyProgressSection'       // 14. Monthly Progress
   ];
