@@ -11087,6 +11087,35 @@ async function clearDailyGreeting(){
 /* ============================================================ */
 var _attChart=null,_marksChart=null;
 
+// 🆕 Plugin for continuous artificial animation (ചലിച്ചുകൊണ്ടിരിക്കുന്ന ലൈൻ)
+if(window.Chart){
+  const movingGraphPlugin = {
+    id: 'movingGraph',
+    afterDraw: function(chart) {
+      if (chart.config.type === 'line' && chart.isDatasetVisible(0)) {
+        const meta = chart.getDatasetMeta(0);
+        if (meta && meta.dataset) {
+          meta.dataset.options.borderDash = [8, 4];
+          meta.dataset.options.borderDashOffset = -(performance.now() / 40) % 12;
+          if (!chart._animFrame) {
+            chart._animFrame = requestAnimationFrame(function() {
+              chart._animFrame = null;
+              if (chart.ctx && chart.canvas) chart.draw();
+            });
+          }
+        }
+      }
+    },
+    beforeDestroy: function(chart) {
+      if (chart._animFrame) {
+        cancelAnimationFrame(chart._animFrame);
+        chart._animFrame = null;
+      }
+    }
+  };
+  try { Chart.register(movingGraphPlugin); } catch(e){}
+}
+
 async function renderCharts(){
   if(!currentUser||!window.Chart)return;
   var attCtx=document.getElementById('attendanceChart');
@@ -11094,18 +11123,45 @@ async function renderCharts(){
   if(!attCtx||!marksCtx)return;
   var txtColor='#0f172a';
   var gridColor='rgba(59,130,246,.15)';
+  
   try{
     var ar=await supabaseClient.from('attendance_records').select('month_year,percentage').eq('studentid',currentUser.studentId).order('month_year');
     var labels=(ar.data||[]).map(function(x){return formatMonthMalayalam(x.month_year,true);});
     var vals=(ar.data||[]).map(function(x){return Number(x.percentage)||0;});
     if(!labels.length){labels=['No data'];vals=[0];}
     if(_attChart)_attChart.destroy();
+    
+    // 🆕 Gradient Fill for Line Chart
+    var gradientLine = attCtx.getContext('2d').createLinearGradient(0, 0, 0, 250);
+    gradientLine.addColorStop(0, 'rgba(34, 211, 238, 0.6)');
+    gradientLine.addColorStop(1, 'rgba(34, 211, 238, 0.05)');
+
     _attChart=new Chart(attCtx,{
       type:'line',
-      data:{labels:labels,datasets:[{label:'Attendance %',data:vals,borderColor:'#0891b2',backgroundColor:'rgba(8,145,178,.15)',fill:true,tension:.35,pointBackgroundColor:'#0891b2',pointRadius:5,borderWidth:3}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100,ticks:{color:txtColor},grid:{color:gridColor}},x:{ticks:{color:txtColor},grid:{color:gridColor}}}}
+      data:{labels:labels,datasets:[{
+        label:'Attendance %',
+        data:vals,
+        borderColor:'#0891b2',
+        backgroundColor: gradientLine,
+        fill:true,
+        tension:.45,
+        pointBackgroundColor:'#fff',
+        pointBorderColor:'#0891b2',
+        pointBorderWidth:3,
+        pointRadius:4,
+        pointHoverRadius:8,
+        borderWidth:3
+      }]},
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        animation: { duration: 2000, easing: 'easeOutElastic' },
+        plugins:{legend:{display:false}},
+        scales:{y:{beginAtZero:true,max:100,ticks:{color:txtColor},grid:{color:gridColor}},x:{ticks:{color:txtColor},grid:{color:gridColor}}}
+      }
     });
   }catch(e){console.warn('attChart',e);}
+  
   try{
     var mr=await supabaseClient.from('exam_marks').select('exam_name,obtained_marks,max_marks').eq('studentid',currentUser.studentId);
     var byExam={};
@@ -11117,10 +11173,30 @@ async function renderCharts(){
     var exVals=exLabels.map(function(k){var e=byExam[k];return e.t>0?Math.round(e.o/e.t*100):0;});
     if(!exLabels.length){exLabels=['No data'];exVals=[0];}
     if(_marksChart)_marksChart.destroy();
+    
+    // 🆕 Gradient Fill for Bar Chart
+    var gradientBar = marksCtx.getContext('2d').createLinearGradient(0, 0, 0, 250);
+    gradientBar.addColorStop(0, '#3b82f6');
+    gradientBar.addColorStop(1, '#a855f7');
+
     _marksChart=new Chart(marksCtx,{
       type:'bar',
-      data:{labels:exLabels,datasets:[{label:'Score %',data:exVals,backgroundColor:'rgba(59,130,246,.7)',borderColor:'#2563eb',borderWidth:2,borderRadius:10}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100,ticks:{color:txtColor},grid:{color:gridColor}},x:{ticks:{color:txtColor},grid:{color:gridColor}}}}
+      data:{labels:exLabels,datasets:[{
+        label:'Score %',
+        data:exVals,
+        backgroundColor: gradientBar,
+        borderColor:'#2563eb',
+        borderWidth:0,
+        borderRadius:10,
+        barThickness: 25
+      }]},
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        animation: { duration: 2500, easing: 'easeOutBounce' },
+        plugins:{legend:{display:false}},
+        scales:{y:{beginAtZero:true,max:100,ticks:{color:txtColor},grid:{color:gridColor}},x:{ticks:{color:txtColor},grid:{color:gridColor}}}
+      }
     });
   }catch(e){console.warn('marksChart',e);}
 }
