@@ -11155,7 +11155,11 @@ async function renderCharts(){
       options:{
         responsive:true,
         maintainAspectRatio:false,
-        animation: { duration: 2000, easing: 'easeOutElastic' },
+        // 🆕 ELASTIC BOUNCE ANIMATION
+        animation: {
+          y: { duration: 3000, easing: 'easeOutElastic', from: 0 },
+          x: { duration: 1000, easing: 'easeOutQuart' }
+        },
         plugins:{legend:{display:false}},
         scales:{y:{beginAtZero:true,max:100,ticks:{color:txtColor},grid:{color:gridColor}},x:{ticks:{color:txtColor},grid:{color:gridColor}}}
       }
@@ -11193,7 +11197,11 @@ async function renderCharts(){
       options:{
         responsive:true,
         maintainAspectRatio:false,
-        animation: { duration: 2500, easing: 'easeOutBounce' },
+        // 🆕 ELASTIC BOUNCE ANIMATION
+        animation: {
+          y: { duration: 3000, easing: 'easeOutElastic', from: 0 },
+          x: { duration: 1000, easing: 'easeOutQuart' }
+        },
         plugins:{legend:{display:false}},
         scales:{y:{beginAtZero:true,max:100,ticks:{color:txtColor},grid:{color:gridColor}},x:{ticks:{color:txtColor},grid:{color:gridColor}}}
       }
